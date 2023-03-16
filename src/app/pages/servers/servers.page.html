@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Servers</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-input placeholder="Enter server title"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input placeholder="Enter server ip"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input placeholder="Enter server hostname"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-textarea
+        placeholder="Enter server notes"
+        [autoGrow]="true"
+        [clearOnEdit]="true"
+      ></ion-textarea>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab slot="fixed" horizontal="end" vertical="bottom">
+    <ion-fab-button>
+      <ion-icon name="save-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
