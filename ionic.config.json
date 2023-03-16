@@ -1,0 +1,7 @@
+{
+  "name": "beaver-servervault",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
