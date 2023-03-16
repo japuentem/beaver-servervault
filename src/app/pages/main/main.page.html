@@ -5,15 +5,29 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
+  <ion-card *ngFor="let card of cardInfo">
     <ion-card-header>
-      <ion-card-title>Card Title</ion-card-title>
-      <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+      <ion-card-title>{{ card.title }}</ion-card-title>
+      <ion-card-subtitle>{{ card.ip }} - {{ card.hostname}}</ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
-      Here's a small text description for the card content. Nothing more,
-      nothing less.
+      <p>{{ card.notes }}</p>
+      <p>User:{{ card.user }}</p>
+      <p>
+        Password:
+        <span *ngIf="showPassword">{{ card.password }}</span>
+        <span *ngIf="!showPassword">**********</span>
+        <ion-button
+          ion-button
+          icon-only
+          (click)="togglePassword()"
+          size="small"
+        >
+          <ion-icon name="{{ showPassword ? 'eye-off' : 'eye' }}"></ion-icon>
+        </ion-button>
+      </p>
+      <p>Duedate: {{ card.duedate }}</p>
     </ion-card-content>
   </ion-card>
 
