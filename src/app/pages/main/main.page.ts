@@ -15,14 +15,12 @@ export class MainPage implements OnInit {
   cardInfo: any[] = [];
   showPassword = false;
 
+  passwordVisibility: { [key: string]: boolean } = {};
+
   constructor(
     private serversService: ServersService,
     private usersService: UsersService
-  ) {}
-
-  ngOnInit() {
-    console.log('ngOnInit');
-
+  ) {
     /*     this.serversService.getServers().subscribe((servers) => {
       console.log('ServT: ', servers);
     });
@@ -30,6 +28,11 @@ export class MainPage implements OnInit {
     this.usersService.getUsers().subscribe((users) => {
       console.log('UsrT: ', users);
     }); */
+    this.ngOnInit();
+  }
+
+  ngOnInit() {
+    console.log('ngOnInit');
 
     forkJoin([
       this.serversService.getServers().pipe(take(1)),
@@ -40,20 +43,39 @@ export class MainPage implements OnInit {
       const combinedData: any[] = [];
 
       servers.forEach((server) => {
-        const matchingUser = users.find((user) => user.id === server.id);
-        if (matchingUser) {
-          const combinedInfo = { ...server, ...matchingUser };
-          combinedData.push(combinedInfo);
+        const matchingUsers = users.filter((user) => user.id === server.id);
+        if (matchingUsers && matchingUsers.length > 0) {
+          const usersData: any[] = [];
+          matchingUsers.forEach((user) => {
+            const userData = {
+              user: user.user,
+              password: user.password,
+              duedate: user.duedate,
+              ...server,
+            };
+            usersData.push(userData);
+          });
+          combinedData.push(...usersData);
+        } else {
+          const serverData = {
+            user: '',
+            password: '',
+            duedate: '',
+            ...server,
+          };
+          combinedData.push(serverData);
         }
       });
 
-      this.cardInfo = combinedData;
       console.log('Combined data: ', combinedData);
+      this.cardInfo = combinedData;
     });
   }
 
-  togglePassword() {
-    this.showPassword = !this.showPassword;
+  togglePassword(card: number) {
+    console.log('card.id: ', card);
+
+    this.passwordVisibility[card] = !this.passwordVisibility[card];
   }
 
   getUsers() {

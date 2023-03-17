@@ -38,28 +38,44 @@ export class ServersPage implements OnInit {
       return;
     }
 
-    // Crear un nuevo documento con los datos del formulario
-    console.log('before add serverRef');
+    // Query the 'servers' collection to get the maximum ID value
     serverRef
-      .add({
-        id: 0,
-        title: this.title,
-        ip: this.ip,
-        hostname: this.hostname,
-        notes: this.notes,
-      })
-      .then(() => {
-        console.log('Server added in Firebase');
-        // Clean formulary fields after saving data
-        this.id = 0;
-        this.title = '';
-        this.ip = '';
-        this.hostname = '';
-        this.notes = '';
-        this.navCtrl.navigateBack('/main');
+      .orderBy('id', 'desc')
+      .limit(1)
+      .get()
+      .then((querySnapshot) => {
+        let nextId = 1;
+        if (!querySnapshot.empty) {
+          // Get the maximum ID value and add 1 to get the next ID
+          nextId = querySnapshot.docs[0].data()['id'] + 1;
+        }
+
+        // Crear un nuevo documento con los datos del formulario y el siguiente ID
+        console.log('before add serverRef');
+        serverRef
+          .add({
+            id: nextId,
+            title: this.title,
+            ip: this.ip,
+            hostname: this.hostname,
+            notes: this.notes,
+          })
+          .then(() => {
+            console.log('Server added in Firebase');
+            // Clean formulary fields after saving data
+            this.id = 0;
+            this.title = '';
+            this.ip = '';
+            this.hostname = '';
+            this.notes = '';
+            this.navCtrl.navigateBack('/main');
+          })
+          .catch((error) => {
+            console.error('Error adding server info in Firebase: ', error);
+          });
       })
       .catch((error) => {
-        console.error('Error adding server info in Firebase: ', error);
+        console.error('Error getting maximum ID value: ', error);
       });
   }
 }

@@ -5,9 +5,9 @@
 </ion-header>
 
 <ion-content>
-  <ion-card *ngFor="let card of cardInfo">
+  <ion-card *ngFor="let card of cardInfo;let idx=index">
     <ion-card-header>
-      <ion-card-title>{{ card.title }}</ion-card-title>
+      <ion-card-title>{{ card.title }} - {{idx+1}}</ion-card-title>
       <ion-card-subtitle>{{ card.ip }} - {{ card.hostname}}</ion-card-subtitle>
     </ion-card-header>
 
@@ -16,15 +16,17 @@
       <p>User:{{ card.user }}</p>
       <p>
         Password:
-        <span *ngIf="showPassword">{{ card.password }}</span>
-        <span *ngIf="!showPassword">**********</span>
+        <span *ngIf="passwordVisibility[idx+1]">{{ card.password }}</span>
+        <span *ngIf="!passwordVisibility[idx+1]">**********</span>
         <ion-button
           ion-button
           icon-only
-          (click)="togglePassword()"
+          (click)="togglePassword(idx+1)"
           size="small"
         >
-          <ion-icon name="{{ showPassword ? 'eye-off' : 'eye' }}"></ion-icon>
+          <ion-icon
+            name="{{ passwordVisibility[idx+1] ? 'eye-off' : 'eye' }}"
+          ></ion-icon>
         </ion-button>
       </p>
       <p>Duedate: {{ card.duedate }}</p>
@@ -37,10 +39,10 @@
     </ion-fab-button>
     <ion-fab-list side="top">
       <ion-fab-button routerLink="/server-user">
-        <ion-icon name="person-add-outline"></ion-icon>
+        <ion-icon name="terminal-outline"></ion-icon>
       </ion-fab-button>
       <ion-fab-button routerLink="/servers">
-        <ion-icon name="tv-outline"></ion-icon>
+        <ion-icon src="../../../assets/icon/cpu-server-icon.svg"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>

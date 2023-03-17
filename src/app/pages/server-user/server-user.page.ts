@@ -5,6 +5,13 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { environment } from '../../../environments/environment'; // Importar environment
 
+interface Server {
+  id: string;
+  title: string;
+  ip: string;
+  hostname: string;
+  notes: string;
+}
 @Component({
   selector: 'app-server-user',
   templateUrl: './server-user.page.html',
@@ -13,9 +20,9 @@ import { environment } from '../../../environments/environment'; // Importar env
 export class ServerUserPage implements OnInit {
   // Declare formulary variables
   serverList: any[] = [];
+  selectedServer?: Server;
 
   id?: number = 0;
-
   user?: string;
   password?: string;
   duedate?: string;
@@ -38,8 +45,11 @@ export class ServerUserPage implements OnInit {
   }
 
   onServerSelected(event: any) {
-    console.log('Selected Server Text: ', event.target['text']);
-    console.log('Selected Server Value: ', event.target['value']);
+    if (this.selectedServer) {
+      console.log('Selected Server Text: ', this.selectedServer.title);
+      console.log('Selected Server Value: ', this.selectedServer.id);
+      this.id = parseInt(this.selectedServer.id, 10);
+    }
   }
 
   // Método que se llama al hacer clic en el botón ion-fab-button
@@ -63,7 +73,7 @@ export class ServerUserPage implements OnInit {
     console.log('before add serverRef');
     userRef
       .add({
-        id: 0,
+        id: this.id,
         user: this.user,
         password: this.password,
         duedate: this.duedate,

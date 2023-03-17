@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
     <ion-title>Add users to server</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -11,8 +14,9 @@
         interface="popover"
         placeholder="Select server"
         (ionChange)="onServerSelected($event)"
+        [(ngModel)]="selectedServer"
       >
-        <ion-select-option *ngFor="let server of serverList" value="server.id">
+        <ion-select-option *ngFor="let server of serverList" [value]="server">
           {{server.title}}
         </ion-select-option>
       </ion-select>
