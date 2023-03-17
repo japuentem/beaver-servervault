@@ -41,6 +41,69 @@ export class MainPage implements OnInit {
       const [servers, users] = results;
 
       const combinedData: any[] = [];
+      const serverMap: any = {};
+
+      servers.forEach((server) => {
+        serverMap[server.id] = {
+          server: server,
+          users: [],
+        };
+      });
+
+      users.forEach((user) => {
+        const matchingServer = serverMap[user.id];
+        if (matchingServer) {
+          matchingServer.users.push({
+            user: user.user,
+            password: user.password,
+            duedate: user.duedate,
+          });
+        }
+      });
+
+      for (const key in serverMap) {
+        if (serverMap.hasOwnProperty(key)) {
+          const serverEntry = serverMap[key];
+          const server = serverEntry.server;
+          const users = serverEntry.users;
+
+          const combinedEntry: any = {
+            ...server,
+            users: [],
+          };
+
+          if (users.length > 0) {
+            users.forEach(
+              (user: { user: any; password: any; duedate: any }) => {
+                combinedEntry.users.push({
+                  user: user.user,
+                  password: user.password,
+                  duedate: user.duedate,
+                });
+              }
+            );
+          } else {
+            combinedEntry.user = '';
+            combinedEntry.password = '';
+            combinedEntry.duedate = '';
+          }
+
+          combinedData.push(combinedEntry);
+        }
+      }
+
+      console.log('Combined data: ', combinedData);
+      this.cardInfo = combinedData;
+    });
+
+    /*
+    forkJoin([
+      this.serversService.getServers().pipe(take(1)),
+      this.usersService.getUsers().pipe(take(1)),
+    ]).subscribe((results) => {
+      const [servers, users] = results;
+
+      const combinedData: any[] = [];
 
       servers.forEach((server) => {
         const matchingUsers = users.filter((user) => user.id === server.id);
@@ -69,7 +132,7 @@ export class MainPage implements OnInit {
 
       console.log('Combined data: ', combinedData);
       this.cardInfo = combinedData;
-    });
+    }); */
   }
 
   togglePassword(card: number) {
