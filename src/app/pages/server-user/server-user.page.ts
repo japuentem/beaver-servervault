@@ -85,7 +85,7 @@ export class ServerUserPage implements OnInit {
         this.user = '';
         this.password = '';
         this.duedate = '';
-        this.navCtrl.navigateBack('/main');
+        this.navCtrl.navigateBack('/main?timestamp=' + new Date().getTime());
       })
       .catch((error) => {
         console.error('Error adding server info in Firebase: ', error);

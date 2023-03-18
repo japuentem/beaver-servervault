@@ -16,6 +16,7 @@ export class MainPage implements OnInit {
   showPassword = false;
 
   passwordVisibility: { [key: string]: boolean } = {};
+  filteredServers = [...this.servers];
 
   constructor(
     private serversService: ServersService,
@@ -54,6 +55,7 @@ export class MainPage implements OnInit {
         const matchingServer = serverMap[user.id];
         if (matchingServer) {
           matchingServer.users.push({
+            id: user.id,
             user: user.user,
             password: user.password,
             duedate: user.duedate,
@@ -74,8 +76,9 @@ export class MainPage implements OnInit {
 
           if (users.length > 0) {
             users.forEach(
-              (user: { user: any; password: any; duedate: any }) => {
+              (user: { id: any; user: any; password: any; duedate: any }) => {
                 combinedEntry.users.push({
+                  id: user.id,
                   user: user.user,
                   password: user.password,
                   duedate: user.duedate,
@@ -94,6 +97,7 @@ export class MainPage implements OnInit {
 
       console.log('Combined data: ', combinedData);
       this.cardInfo = combinedData;
+      this.filteredServers = this.cardInfo;
     });
 
     /*
@@ -135,12 +139,6 @@ export class MainPage implements OnInit {
     }); */
   }
 
-  togglePassword(card: number) {
-    console.log('card.id: ', card);
-
-    this.passwordVisibility[card] = !this.passwordVisibility[card];
-  }
-
   getUsers() {
     this.usersService.getUsers().subscribe((users) => {
       this.users = users;
@@ -153,5 +151,23 @@ export class MainPage implements OnInit {
       this.servers = servers;
       console.log(this.servers);
     });
+  }
+
+  togglePassword(card: number) {
+    this.passwordVisibility[card] = !this.passwordVisibility[card];
+  }
+
+  trackByFunction(index: number, item: any) {
+    return parseInt((item.id + 1).toString() + (index + 1).toString());
+  }
+
+  filterServers(event: any) {
+    const searchTerm = event.detail.value?.toLowerCase() || ''; // Si event.detail.value es null, asigna una cadena vacía en su lugar
+    this.filteredServers =
+      searchTerm === ''
+        ? this.cardInfo
+        : this.cardInfo.filter((card) =>
+            card.title.toLowerCase().includes(searchTerm)
+          );
   }
 }

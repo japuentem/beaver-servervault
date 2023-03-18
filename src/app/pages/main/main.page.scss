@@ -3,3 +3,9 @@ ion-card-header.ios {
   display: flex;
   flex-flow: column-reverse;
 }
+
+.container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}

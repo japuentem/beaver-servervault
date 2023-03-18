@@ -2,43 +2,65 @@
   <ion-toolbar>
     <ion-title>Server Vault</ion-title>
   </ion-toolbar>
+  <ion-searchbar
+    (ionChange)="filterServers($event)"
+    placeholder="Enter server name"
+  ></ion-searchbar>
 </ion-header>
 
 <ion-content>
-  <ion-card *ngFor="let card of cardInfo; let i = index">
+  <!-- <ion-card *ngFor="let card of cardInfo; let iServer = index"> -->
+  <!-- <ion-card *ngFor="let card of filteredServers; let iServer = index"> -->
+  <ion-card
+    *ngFor="let card of filteredServers ? filteredServers : cardInfo; let iServer = index"
+  >
     <ion-card-header>
-      <ion-card-title>{{ card.title }} - {{i+1}}</ion-card-title>
+      <ion-card-title>{{iServer+1}}.- {{ card.title }}</ion-card-title>
       <ion-card-subtitle>{{ card.ip }} - {{ card.hostname}}</ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
       <p>{{ card.notes }}</p>
-      <ng-container
-        *ngIf="card.users && card.users.length > 0; else noUsersFound"
-      >
-        <ng-container *ngFor="let user of card.users">
-          <p>User:{{ user.user }}</p>
-          <p>
-            Password:
-            <span *ngIf="passwordVisibility[i+1]">{{ user.password }}</span>
-            <span *ngIf="!passwordVisibility[i+1]">**********</span>
-            <ion-button
-              ion-button
-              icon-only
-              (click)="togglePassword(i+1)"
-              size="small"
-            >
-              <ion-icon
-                name="{{ passwordVisibility[i+1] ? 'eye-off' : 'eye' }}"
-              ></ion-icon>
-            </ion-button>
-          </p>
-          <p>Duedate: {{ user.duedate }}</p>
+      <div>
+        <ng-container
+          *ngIf="card.users && card.users.length > 0; else noUsersFound"
+        >
+          <ion-card
+            *ngFor="let user of card.users; let iUser = index; trackBy: trackByFunction"
+          >
+            <ion-card-header>
+              <ion-card-subtitle>User: {{ user.user }}</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <p>
+                Password:
+                <span *ngIf="passwordVisibility[trackByFunction(iUser, user)]"
+                  >{{ user.password }}</span
+                >
+                <span *ngIf="!passwordVisibility[trackByFunction(iUser, user)]"
+                  >**********</span
+                >
+                <ion-button
+                  ion-button
+                  icon-only
+                  (click)="togglePassword(trackByFunction(iUser, user))"
+                  size="small"
+                >
+                  <ion-icon
+                    name="{{ passwordVisibility[iUser] ? 'eye-off' : 'eye' }}"
+                  ></ion-icon>
+                </ion-button>
+              </p>
+
+              <p>Duedate: {{ user.duedate }}</p>
+            </ion-card-content>
+          </ion-card>
         </ng-container>
-      </ng-container>
-      <ng-template #noUsersFound>
-        <p>No se encontraron usuarios para este servidor</p>
-      </ng-template>
+
+        <ng-template #noUsersFound>
+          <p>No se encontraron usuarios para este servidor</p>
+        </ng-template>
+      </div>
     </ion-card-content>
   </ion-card>
 
